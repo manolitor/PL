@@ -1,0 +1,31 @@
+// Analizador léxico lenguaje P
+lexer grammar Analex;
+BLANCO: ' ' ->skip;
+TABULADOR: '\t'->skip;
+FIN_LINEA: '\r'?'\n' ->skip;
+
+fragment DIGITO: [0-9];
+fragment LETRA:[a-zA-Z];
+INSTRUCCIONES: 'INSTRUCCIONES';
+VARIABLES: 'VARIABLES';
+//ASIGNACIONES: 'ASIGNACIONES';
+SUBPROGRAMAS: 'SUBPROGRAMAS';
+T: 'true';
+F: 'false';
+NUM: 'NUM';
+LOG: 'LOG';
+SEQ: 'SEQ';
+INT : ('-')?DIGITO+;
+IDENT : LETRA(LETRA|DIGITO)*;
+BOOL: 'T'|'F';
+PARENTESISABIERTO : '(';
+PARENTESISCERRADO : ')';
+CORCHETEABIERTO : '[';
+CORCHETECERRADO : ']';
+DOSPUNTOS: ':';
+PyC : ';';
+COMA : ',';
+ASIG: '=';
+SUMA: '+' ;
+RESTA: '-' ;
+MULTIPLICACION: '*' ;
