@@ -40,7 +40,11 @@ procedimiento: IDENT;
 
 instrucciones: INSTRUCCIONES (asignacion)*;
 
-asignacion: IDENT ASIG expr PyC;
+asignacion: idents ASIG expresiones PyC;
+
+idents: IDENT (COMA idents)?;
+
+expresiones: expr (COMA expresiones)?;
 
 expr: expr_seq
      |expr_log
@@ -61,15 +65,15 @@ seq_log: CORCHETEABIERTO CORCHETECERRADO
     ;
 //num
 
-expr_num:INT
+expr_num:INT (COMA expr_num)?
 	|expr_num (SUMA | RESTA) expr_num1
 	|IDENT
 	|expr_num1
     ;
-expr_num1:INT
+expr_num1:INT (COMA expr_num)?
 	|expr_num1 MULTIPLICACION expr_num
 	|IDENT
     ;
 //log
 
-expr_log: BOOL;
+expr_log: T | F;
