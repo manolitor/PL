@@ -23,8 +23,7 @@ public class Principal {
         viewr.setScale(1); //scale a little
         panel.add(viewr);
         frame.add(panel); frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        frame.setSize(500,400);
+        frame.setSize(15000,14000);
         frame.setVisible(true);
     }
 }
