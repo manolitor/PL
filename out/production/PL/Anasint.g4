@@ -22,17 +22,27 @@ seqs: IDENT (COMA seqs)?;
 
 //subprogramas
 
-subprogramas: SUBPROGRAMAS (decl_funcion  | decl_procedimiento)*;
+subprogramas: SUBPROGRAMAS (decl_funcion  | decl_procedimiento | decl_predicado)*;
+
+//funcion
 
 decl_funcion: FUNCION funcion variables instrucciones dev FFUNCION;
-
-dev: DEV idents PyC;
 
 funcion:  IDENT PARENTESISABIERTO entrada PARENTESISCERRADO DEV PARENTESISABIERTO salida PARENTESISCERRADO;
 
 entrada: ((SEQ PARENTESISABIERTO tipo PARENTESISCERRADO IDENT | tipo IDENT))*;
 salida: (SEQ PARENTESISABIERTO tipo PARENTESISCERRADO IDENT COMA)
-        |tipo IDENT (COMA tipo IDENT)?;
+        |NUM IDENT (COMA NUM IDENT)?;
+
+//predicado
+
+decl_predicado: FUNCION predicado variables instrucciones FFUNCION;
+
+predicado: IDENT PARENTESISABIERTO entrada PARENTESISCERRADO DEV PARENTESISABIERTO salidaP PARENTESISCERRADO;
+
+salidaP: LOG IDENT;
+
+//prodecimiento
 
 decl_procedimiento: PROCEDIMIENTO procedimiento variables instrucciones FPROCEDIMIENTO;
 
@@ -44,13 +54,23 @@ procedimiento: IDENT PARENTESISABIERTO( SEQ PARENTESISABIERTO tipo PARENTESISCER
 
 //instrucciones
 
-instrucciones: INSTRUCCIONES (control | asignacion)*;
+instrucciones: INSTRUCCIONES (control | asignacion | siL)*;
 
-control: (mientras | si) ;
+control: ( mientras | si);
 
-mientras: MIENTRAS PARENTESISABIERTO expr (MAYOR | MENOR | MENORIGUAL | MAYORIGUAL) expr PARENTESISCERRADO HACER (control | asignacion)* FMIENTRAS;
+mientras: MIENTRAS PARENTESISABIERTO expr_sec (igualdades | desilgualdades) expr_sec PARENTESISCERRADO HACER (control | asignacion)+ FMIENTRAS;
 
-si: SI PARENTESISABIERTO expr (MAYOR | MENOR | MENORIGUAL | MAYORIGUAL) expr PARENTESISCERRADO ENTONCES (control | asignacion)* FSI;
+si: SI PARENTESISABIERTO expr_sec+ (igualdades | desilgualdades) expr_sec+ PARENTESISCERRADO ENTONCES (control | asignacion)+ (SINO (control | asignacion)+)? FSI;
+
+siL: SI PARENTESISABIERTO expr_sec (igualdades | desilgualdades) expr_sec PARENTESISCERRADO ENTONCES (devL)+ SINO? (devL)+ FSI;
+
+expr_sec: NEGACION? (CON | DIS)? expr
+          |NEGACION? PARENTESISABIERTO NEGACION? expr (CON | DIS) NEGACION? expr PARENTESISCERRADO
+          |NEGACION? expr (CON | DIS) NEGACION? expr
+          |(CON | DIS)? PARENTESISABIERTO NEGACION? expr (CON | DIS) NEGACION? expr PARENTESISCERRADO;
+igualdades: IGUAL;
+
+desilgualdades: (MAYOR | MENOR | MENORIGUAL | MAYORIGUAL | DISTINTO);
 
 asignacion: idents ASIG expresiones PyC;
 
@@ -61,10 +81,11 @@ expresiones: expr (COMA expresiones)?;
 expr: expr_seq
     |expr_log
     |expr_num
+    |ultimaP
     ;
 //seq
 
-expr_seq:| seq_num
+expr_seq: seq_num
          | seq_log
         ;
 
@@ -89,3 +110,11 @@ expr_num1:INT (COMA expr_num)?
 //log
 
 expr_log: T | F;
+
+dev: DEV idents PyC;
+
+devL: DEV expr_log PyC;
+
+//llamada a subprogramas
+
+ultimaP: ULTIMAPOSICION PARENTESISABIERTO IDENT PARENTESISCERRADO;
