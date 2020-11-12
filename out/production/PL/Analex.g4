@@ -53,3 +53,6 @@ DISTINTO: '!=';
 MAYORIGUAL: '>=';
 MENORIGUAL: '<=';
 MULTIPLICACION: '*' ;
+
+COMENTARIO_BLOQUE: '/*' .*? '*/' -> skip;
+COMENTARIO_LINEA: '//' .*? FIN_LINEA -> skip;

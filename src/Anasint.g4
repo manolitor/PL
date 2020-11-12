@@ -4,7 +4,7 @@ options{
 }
 
 
-programa: PROGRAMA (variables)* (subprogramas)* (instrucciones)*;
+programa: PROGRAMA variables subprogramas instrucciones;
 
 //variables
 
@@ -30,9 +30,12 @@ decl_funcion: FUNCION funcion variables instrucciones dev FFUNCION;
 
 funcion:  IDENT PARENTESISABIERTO entrada PARENTESISCERRADO DEV PARENTESISABIERTO salida PARENTESISCERRADO;
 
-entrada: ((SEQ PARENTESISABIERTO tipo PARENTESISCERRADO IDENT | tipo IDENT))*;
-salida: (SEQ PARENTESISABIERTO tipo PARENTESISCERRADO IDENT COMA)
-        |NUM IDENT (COMA NUM IDENT)?;
+entrada: SEQ PARENTESISABIERTO tipo PARENTESISCERRADO IDENT (COMA salida)?
+                 |NUM IDENT (COMA salida)?;
+
+salida: SEQ PARENTESISABIERTO tipo PARENTESISCERRADO IDENT (COMA salida)?
+        |NUM IDENT (COMA salida)?;
+
 
 //predicado
 
@@ -46,9 +49,7 @@ salidaP: LOG IDENT;
 
 decl_procedimiento: PROCEDIMIENTO procedimiento variables instrucciones FPROCEDIMIENTO;
 
-procedimiento: IDENT PARENTESISABIERTO( SEQ PARENTESISABIERTO tipo PARENTESISCERRADO IDENT
-                                      (COMA SEQ PARENTESISABIERTO tipo PARENTESISCERRADO IDENT)?
-                              |  tipo IDENT (COMA tipo IDENT)? )? PARENTESISCERRADO;
+procedimiento:  IDENT PARENTESISABIERTO entrada PARENTESISCERRADO;
 
 
 
@@ -118,3 +119,10 @@ devL: DEV expr_log PyC;
 //llamada a subprogramas
 
 ultimaP: ULTIMAPOSICION PARENTESISABIERTO IDENT PARENTESISCERRADO;
+
+//falta:
+//condicion cierto/falso
+//predicado vacia (secuencias)
+//rupturas
+//llamdas a funcion
+//mostrar
