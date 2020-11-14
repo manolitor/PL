@@ -18,6 +18,7 @@ DEV: 'dev';
 PROCEDIMIENTO: 'PROCEDIMIENTO';
 FPROCEDIMIENTO: 'FPROCEDIMIENTO';
 ULTIMAPOSICION: 'ultima_posicion';
+VACIA: 'vacia';
 MIENTRAS: 'mientras';
 FMIENTRAS: 'fmientras';
 HACER: 'hacer';

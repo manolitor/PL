@@ -123,17 +123,19 @@ expr_num:INT (COMA expr_num)?
 //   ;
 //log
 
-expr_log: T | F;
+expr_log: T | F | vacia;
 
 dev: DEV idents PyC;
 
 devL: DEV expr_log PyC;
 
-//llamada
+//llamadas
 
-llamadas: (llamadaP | llamadaF | llamadasP);
+llamadas: (llamadaP | llamadaF | fuciones_predefinidas);
 
-llamadasP: (ultimaposicion);
+fuciones_predefinidas: (vacia | ultimaposicion);
+
+vacia: VACIA PARENTESISABIERTO idents PARENTESISCERRADO;
 
 ultimaposicion: ULTIMAPOSICION PARENTESISABIERTO idents PARENTESISCERRADO;
 
