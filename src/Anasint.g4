@@ -28,10 +28,10 @@ subprogramas: SUBPROGRAMAS (decl_funcion  | decl_procedimiento | decl_predicado)
 
 decl_funcion: FUNCION funcion variables instrucciones dev FFUNCION;
 
-funcion:  IDENT PARENTESISABIERTO entrada PARENTESISCERRADO DEV PARENTESISABIERTO salida PARENTESISCERRADO;
+funcion:  IDENT PARENTESISABIERTO entrada? PARENTESISCERRADO DEV PARENTESISABIERTO salida PARENTESISCERRADO;
 
-entrada: SEQ PARENTESISABIERTO tipo PARENTESISCERRADO IDENT (COMA salida)?
-                 |NUM IDENT (COMA salida)?;
+entrada: SEQ PARENTESISABIERTO tipo PARENTESISCERRADO IDENT (COMA entrada)?
+                 |NUM IDENT (COMA entrada)?;
 
 salida: SEQ PARENTESISABIERTO tipo PARENTESISCERRADO IDENT (COMA salida)?
         |NUM IDENT (COMA salida)?;
@@ -41,7 +41,7 @@ salida: SEQ PARENTESISABIERTO tipo PARENTESISCERRADO IDENT (COMA salida)?
 
 decl_predicado: FUNCION predicado variables instrucciones FFUNCION;
 
-predicado: IDENT PARENTESISABIERTO entrada PARENTESISCERRADO DEV PARENTESISABIERTO salidaP PARENTESISCERRADO;
+predicado: IDENT PARENTESISABIERTO entrada? PARENTESISCERRADO DEV PARENTESISABIERTO salidaP PARENTESISCERRADO;
 
 salidaP: LOG IDENT;
 
@@ -49,65 +49,78 @@ salidaP: LOG IDENT;
 
 decl_procedimiento: PROCEDIMIENTO procedimiento variables instrucciones FPROCEDIMIENTO;
 
-procedimiento:  IDENT PARENTESISABIERTO entrada PARENTESISCERRADO;
+procedimiento:  IDENT PARENTESISABIERTO entrada? PARENTESISCERRADO;
 
 
 
 //instrucciones
 
-instrucciones: INSTRUCCIONES (control | asignacion | siL)*;
+instrucciones: INSTRUCCIONES (control | asignacion | llamadas)*;
 
-control: ( mientras | si);
+control: ( mientras | si  | siL);
 
-mientras: MIENTRAS PARENTESISABIERTO expr_sec (igualdades | desilgualdades) expr_sec PARENTESISCERRADO HACER (control | asignacion)+ FMIENTRAS;
+mientras: MIENTRAS PARENTESISABIERTO expr_sec (igualdades | desilgualdades) expr_sec PARENTESISCERRADO HACER (control | asignacion | llamadas)+ FMIENTRAS;
 
-si: SI PARENTESISABIERTO expr_sec+ (igualdades | desilgualdades) expr_sec+ PARENTESISCERRADO ENTONCES (control | asignacion)+ (SINO (control | asignacion)+)? FSI;
+si: SI PARENTESISABIERTO expr_sec+ (igualdades | desilgualdades) expr_sec+ PARENTESISCERRADO ENTONCES (control | asignacion | llamadas)+ (SINO (control | asignacion | llamadas)+)? FSI;
 
 siL: SI PARENTESISABIERTO expr_sec (igualdades | desilgualdades) expr_sec PARENTESISCERRADO ENTONCES (devL)+ SINO? (devL)+ FSI;
 
-expr_sec: NEGACION? (CON | DIS)? expr
+expr_sec: NEGACION? expr
+          |(CON | DIS)? expr
           |NEGACION? PARENTESISABIERTO NEGACION? expr (CON | DIS) NEGACION? expr PARENTESISCERRADO
           |NEGACION? expr (CON | DIS) NEGACION? expr
-          |(CON | DIS)? PARENTESISABIERTO NEGACION? expr (CON | DIS) NEGACION? expr PARENTESISCERRADO;
+          |(CON | DIS)? PARENTESISABIERTO NEGACION? expr (CON | DIS) NEGACION? expr PARENTESISCERRADO
+          ;
+
 igualdades: IGUAL;
 
 desilgualdades: (MAYOR | MENOR | MENORIGUAL | MAYORIGUAL | DISTINTO);
 
-asignacion: idents ASIG expresiones PyC;
+asignacion: idents ASIG expresiones PyC
+            |asignacionL;
+
+asignacionL: idents ASIG expresionesL PyC;
 
 idents: IDENT (COMA idents)?;
 
 expresiones: expr (COMA expresiones)?;
 
-expr: expr_seq
-    |expr_log
+expresionesL: expr_log (COMA expresionesL)?;
+
+expr:expr_seq
     |expr_num
-    |ultimaP
+    |llamadaF
     ;
 //seq
 
 expr_seq: seq_num
-         | seq_log
+         |seq_log
         ;
 
-seq_num: IDENT CORCHETEABIERTO CORCHETECERRADO
-  |IDENT CORCHETEABIERTO expr_num (COMA expr_num)* CORCHETECERRADO
-   ;
+seq_num: CORCHETEABIERTO CORCHETECERRADO
+         |CORCHETEABIERTO expr_num (COMA expr_num)* CORCHETECERRADO
+         |IDENT CORCHETEABIERTO CORCHETECERRADO
+         |IDENT CORCHETEABIERTO expr_num (COMA expr_num)* CORCHETECERRADO
+         ;
 
-seq_log: IDENT CORCHETEABIERTO CORCHETECERRADO
-  |IDENT CORCHETEABIERTO expr_log (COMA expr_log)* CORCHETECERRADO
+seq_log: CORCHETEABIERTO CORCHETECERRADO
+        | CORCHETEABIERTO expr_log (COMA expr_log)* CORCHETECERRADO
    ;
 //num
 
 expr_num:INT (COMA expr_num)?
-  |expr_num (SUMA | RESTA) expr_num1
+  |expr_num (SUMA | RESTA | MULTIPLICACION) expr_num
   |IDENT
-  |expr_num1
-   ;
-expr_num1:INT (COMA expr_num)?
-  |expr_num1 MULTIPLICACION expr_num
-  |IDENT
-   ;
+  |PARENTESISABIERTO expr_num PARENTESISCERRADO
+  |llamadaF
+  |seq_num
+  |ultimaposicion
+  ;
+//expr_num1:INT (COMA expr_num)?
+//  |expr_num1 MULTIPLICACION expr_num
+//  |IDENT
+//  |PARENTESISABIERTO expr_num PARENTESISCERRADO
+//   ;
 //log
 
 expr_log: T | F;
@@ -116,9 +129,19 @@ dev: DEV idents PyC;
 
 devL: DEV expr_log PyC;
 
-//llamada a subprogramas
+//llamada
 
-ultimaP: ULTIMAPOSICION PARENTESISABIERTO IDENT PARENTESISCERRADO;
+llamadas: (llamadaP | llamadaF | llamadasP);
+
+llamadasP: (ultimaposicion);
+
+ultimaposicion: ULTIMAPOSICION PARENTESISABIERTO idents PARENTESISCERRADO;
+
+llamadaP: idents PARENTESISABIERTO idents PARENTESISCERRADO PyC;
+
+llamadaF: idents PARENTESISABIERTO idents PARENTESISCERRADO PyC?;
+
+
 
 //falta:
 //condicion cierto/falso
