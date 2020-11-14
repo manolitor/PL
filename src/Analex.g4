@@ -19,6 +19,8 @@ PROCEDIMIENTO: 'PROCEDIMIENTO';
 FPROCEDIMIENTO: 'FPROCEDIMIENTO';
 ULTIMAPOSICION: 'ultima_posicion';
 VACIA: 'vacia';
+MOSTRAR: 'mostrar';
+RUPTURA: 'ruptura';
 MIENTRAS: 'mientras';
 FMIENTRAS: 'fmientras';
 HACER: 'hacer';

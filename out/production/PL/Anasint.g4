@@ -55,11 +55,13 @@ procedimiento:  IDENT PARENTESISABIERTO entrada? PARENTESISCERRADO;
 
 //instrucciones
 
-instrucciones: INSTRUCCIONES (control | asignacion | llamadas)*;
+instrucciones: INSTRUCCIONES (control | asignacion | llamadas | ruptura)*;
 
 control: ( mientras | si  | siL);
 
-mientras: MIENTRAS PARENTESISABIERTO expr_sec (igualdades | desilgualdades) expr_sec PARENTESISCERRADO HACER (control | asignacion | llamadas)+ FMIENTRAS;
+ruptura: RUPTURA PyC;
+
+mientras: MIENTRAS PARENTESISABIERTO expr_sec (igualdades | desilgualdades) expr_sec PARENTESISCERRADO HACER (control | asignacion | llamadas | ruptura)+ FMIENTRAS;
 
 si: SI PARENTESISABIERTO expr_sec+ (igualdades | desilgualdades) expr_sec+ PARENTESISCERRADO ENTONCES (control | asignacion | llamadas)+ (SINO (control | asignacion | llamadas)+)? FSI;
 
@@ -131,23 +133,20 @@ devL: DEV expr_log PyC;
 
 //llamadas
 
-llamadas: (llamadaP | llamadaF | fuciones_predefinidas);
+llamadas: (llamadaP | llamadaF | vacia | ultimaposicion | mostrar);
 
-fuciones_predefinidas: (vacia | ultimaposicion);
+vacia: VACIA PARENTESISABIERTO IDENT PARENTESISCERRADO;
 
-vacia: VACIA PARENTESISABIERTO idents PARENTESISCERRADO;
+mostrar: MOSTRAR PARENTESISABIERTO idents PARENTESISCERRADO PyC;
 
-ultimaposicion: ULTIMAPOSICION PARENTESISABIERTO idents PARENTESISCERRADO;
+ultimaposicion: ULTIMAPOSICION PARENTESISABIERTO IDENT PARENTESISCERRADO;
 
 llamadaP: idents PARENTESISABIERTO idents PARENTESISCERRADO PyC;
 
-llamadaF: idents PARENTESISABIERTO idents PARENTESISCERRADO PyC?;
+llamadaF: idents PARENTESISABIERTO idents PARENTESISCERRADO;
 
 
 
 //falta:
 //condicion cierto/falso
-//predicado vacia (secuencias)
 //rupturas
-//llamdas a funcion
-//mostrar
