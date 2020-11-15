@@ -25,6 +25,8 @@ MIENTRAS: 'mientras';
 FMIENTRAS: 'fmientras';
 HACER: 'hacer';
 SI: 'si';
+CIERTO: 'cierto';
+FALSO: 'falso';
 ENTONCES: 'entonces';
 SINO: 'sino';
 FSI: 'fsi';

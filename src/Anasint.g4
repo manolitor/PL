@@ -57,22 +57,21 @@ procedimiento:  IDENT PARENTESISABIERTO entrada? PARENTESISCERRADO;
 
 instrucciones: INSTRUCCIONES (control | asignacion | llamadas | ruptura)*;
 
-control: ( mientras | si  | siL);
+control: ( mientras | si );
 
 ruptura: RUPTURA PyC;
 
 mientras: MIENTRAS PARENTESISABIERTO expr_sec (igualdades | desilgualdades) expr_sec PARENTESISCERRADO HACER (control | asignacion | llamadas | ruptura)+ FMIENTRAS;
 
-si: SI PARENTESISABIERTO expr_sec+ (igualdades | desilgualdades) expr_sec+ PARENTESISCERRADO ENTONCES (control | asignacion | llamadas)+ (SINO (control | asignacion | llamadas)+)? FSI;
+si: SI PARENTESISABIERTO expr_sec+ (igualdades | desilgualdades) expr_sec+ PARENTESISCERRADO ENTONCES (control | asignacion | llamadas | devL)+ (SINO (control | asignacion | llamadas | devL)+)? FSI;
 
-siL: SI PARENTESISABIERTO expr_sec (igualdades | desilgualdades) expr_sec PARENTESISCERRADO ENTONCES (devL)+ SINO? (devL)+ FSI;
 
 expr_sec: NEGACION? expr
           |(CON | DIS)? expr
           |NEGACION? PARENTESISABIERTO NEGACION? expr (CON | DIS) NEGACION? expr PARENTESISCERRADO
           |NEGACION? expr (CON | DIS) NEGACION? expr
           |(CON | DIS)? PARENTESISABIERTO NEGACION? expr (CON | DIS) NEGACION? expr PARENTESISCERRADO
-          ;
+          | (CIERTO | FALSO);
 
 igualdades: IGUAL;
 
@@ -144,8 +143,3 @@ ultimaposicion: ULTIMAPOSICION PARENTESISABIERTO IDENT PARENTESISCERRADO;
 llamadaP: idents PARENTESISABIERTO idents PARENTESISCERRADO PyC;
 
 llamadaF: idents PARENTESISABIERTO idents PARENTESISCERRADO;
-
-
-
-//falta:
-//condicion cierto/falso
