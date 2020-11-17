@@ -35,20 +35,11 @@ public class Anasem_visitor extends AnasintBaseVisitor<Integer>{
         int value = visit(ctx.expresiones().expr());
         memoria.put(id, value);
 
-        for(Map.Entry<String, Integer> entry: memoria.entrySet()){
+        if(memoria2.get(id)!=memoria.get(id)){
 
-            String key = entry.getKey();
-
-            if(entry.getValue().equals(memoria2.get(key))==false){
-
-                System.out.println("La variable " +key+ " tiene un tipo incorrecto o no ha sido declarada");
-
-            }
-
-
+            System.out.println("La variable: " +id+ " tiene un tipo incorrecto o no ha sido declarada");
 
         }
-        //System.out.println(id);
         //System.out.println(value);
         //System.out.println(memoria);
         return value;
