@@ -25,5 +25,14 @@ public class Principal {
         frame.add(panel); frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(15000,14000);
         frame.setVisible(true);
+
+        //semantico
+        Anasem_visitor anasem = new Anasem_visitor();
+        anasem.visit(tree);
+
+        //ParseTreeWalker walker = new ParseTreeWalker();
+        //Anasem_listener anasem2 = new Anasem_listener();
+        //walker.walk(anasem2, tree);
+
     }
 }

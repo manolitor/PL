@@ -11,14 +11,17 @@ programa: PROGRAMA variables subprogramas instrucciones;
 variables: VARIABLES (decl_vars | decl_seq)*;
 
 decl_vars: vars DOSPUNTOS tipo PyC;
+            //|vars DOSPUNTOS tipo2 PARENTESISABIERTO tipo PARENTESISCERRADO PyC;
 
-decl_seq: seqs DOSPUNTOS SEQ PARENTESISABIERTO tipo PARENTESISCERRADO PyC;
+decl_seq: vars DOSPUNTOS seq PARENTESISABIERTO tipo PARENTESISCERRADO PyC;
 
 tipo:  NUM | LOG;
 
+seq: SEQ;
+
 vars: IDENT (COMA vars)?;
 
-seqs: IDENT (COMA seqs)?;
+//seqs: IDENT (COMA seqs)?;
 
 //subprogramas
 
@@ -78,18 +81,20 @@ igualdades: IGUAL;
 desilgualdades: (MAYOR | MENOR | MENORIGUAL | MAYORIGUAL | DISTINTO);
 
 asignacion: idents ASIG expresiones PyC
-            |asignacionL;
+            //|asignacionL
+            ;
 
-asignacionL: idents ASIG expresionesL PyC;
+//asignacionL: idents ASIG expresionesL PyC;
 
 idents: IDENT (COMA idents)?;
 
 expresiones: expr (COMA expresiones)?;
 
-expresionesL: expr_log (COMA expresionesL)?;
+//expresionesL: expr_log (COMA expresionesL)?;
 
 expr:expr_seq
     |expr_num
+    |expr_log
     |llamadaF
     ;
 //seq
@@ -143,8 +148,3 @@ ultimaposicion: ULTIMAPOSICION PARENTESISABIERTO IDENT PARENTESISCERRADO;
 llamadaP: idents PARENTESISABIERTO idents PARENTESISCERRADO PyC;
 
 llamadaF: idents PARENTESISABIERTO idents PARENTESISCERRADO;
-
-
-
-//falta:
-//condicion cierto/falso
