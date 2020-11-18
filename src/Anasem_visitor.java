@@ -19,12 +19,19 @@ public class Anasem_visitor extends AnasintBaseVisitor<Integer>{
     }
 
     @Override
+    public Integer visitSeqVacia(Anasint.SeqVaciaContext ctx) {
+
+        return Anasint.SEQ;
+
+    }
+
+    @Override
     public Integer visitDecl_seq(Anasint.Decl_seqContext ctx) {
 
         String id = ctx.vars().getText();
-        Integer value = visit(ctx.seq());
+        Integer value = visit(ctx.seq()) + visit(ctx.tipo());
         memoria2.put(id, value);
-        //System.out.println(memoria2);
+        System.out.println("Mapa declaraciones: " +memoria2);
         return visit(ctx.tipo());
     }
 
@@ -35,13 +42,13 @@ public class Anasem_visitor extends AnasintBaseVisitor<Integer>{
         int value = visit(ctx.expresiones().expr());
         memoria.put(id, value);
 
-        if(memoria2.get(id)!=memoria.get(id)){
+        if(memoria2.get(id)!=memoria.get(id) && memoria.get(id) != 30){
 
-            System.out.println("La variable: " +id+ " tiene un tipo incorrecto o no ha sido declarada");
+            System.out.println("La variable " +id+ " tiene una asignacion incorrecta o no ha sido declarada");
 
         }
         //System.out.println(value);
-        //System.out.println(memoria);
+        System.out.println("Mapa asignaciones: " +memoria);
         return value;
     }
 
@@ -55,6 +62,20 @@ public class Anasem_visitor extends AnasintBaseVisitor<Integer>{
     public Integer visitExpr_log(Anasint.Expr_logContext ctx) {
         //System.out.println(ctx.children);
         return Anasint.LOG;
+    }
+
+    @Override
+    public Integer visitSeq_log(Anasint.Seq_logContext ctx) {
+
+        return Anasint.SEQ + Anasint.LOG;
+
+    }
+
+    @Override
+    public Integer visitSeq_num(Anasint.Seq_numContext ctx) {
+
+        return Anasint.SEQ + Anasint.NUM;
+
     }
 
     @Override

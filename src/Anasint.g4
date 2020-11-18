@@ -99,18 +99,15 @@ expr:expr_seq
     ;
 //seq
 
-expr_seq: seq_num
-         |seq_log
+expr_seq: CORCHETEABIERTO CORCHETECERRADO #SeqVacia
+         |seq_num #SeqNum
+         |seq_log #SeqLog
         ;
 
-seq_num: CORCHETEABIERTO CORCHETECERRADO
-         |CORCHETEABIERTO expr_num (COMA expr_num)* CORCHETECERRADO
-         |IDENT CORCHETEABIERTO CORCHETECERRADO
-         |IDENT CORCHETEABIERTO expr_num (COMA expr_num)* CORCHETECERRADO
+seq_num: CORCHETEABIERTO expr_num (COMA expr_num)* CORCHETECERRADO
          ;
 
-seq_log: CORCHETEABIERTO CORCHETECERRADO
-        | CORCHETEABIERTO expr_log (COMA expr_log)* CORCHETECERRADO
+seq_log: CORCHETEABIERTO expr_log (COMA expr_log)* CORCHETECERRADO
    ;
 //num
 
@@ -118,8 +115,9 @@ expr_num:INT (COMA expr_num)?
   |expr_num (SUMA | RESTA | MULTIPLICACION) expr_num
   |IDENT
   |PARENTESISABIERTO expr_num PARENTESISCERRADO
+  |IDENT CORCHETEABIERTO CORCHETECERRADO
+  |IDENT CORCHETEABIERTO expr_num (COMA expr_num)* CORCHETECERRADO
   |llamadaF
-  |seq_num
   |ultimaposicion
   ;
 //expr_num1:INT (COMA expr_num)?
