@@ -44,7 +44,7 @@ public class Anasem_visitor extends AnasintBaseVisitor<Integer>{
 
         if(memoria2.get(id)!=memoria.get(id)){
 
-            System.out.println("La variable " +id+ " tiene una asignacion incorrecta o no ha sido declarada");
+            System.out.println("La variable '" +id+ "' no ha sido declara o está vacía (línea "+ ctx.start.getLine() +", " +ctx.start.getCharPositionInLine()+ ")");
 
         }
         //System.out.println(value);
@@ -53,9 +53,40 @@ public class Anasem_visitor extends AnasintBaseVisitor<Integer>{
     }
 
     @Override
-    public Integer visitExpr_num(Anasint.Expr_numContext ctx) {
-        //System.out.println(ctx.children);
+    public Integer visitInt(Anasint.IntContext ctx) {
+
         return Anasint.NUM;
+
+    }
+
+    @Override
+    public Integer visitId(Anasint.IdContext ctx) {
+
+        String id = ctx.IDENT().getText();
+
+        if(!memoria.containsKey(id)){
+
+            System.out.println("La variable '" +id+ "' no ha sido declara o está vacía (línea "+ ctx.start.getLine() +", " +ctx.start.getCharPositionInLine()+ ")");
+
+        }
+
+        return Anasint.NUM;
+
+    }
+
+    @Override
+    public Integer visitOpSeq(Anasint.OpSeqContext ctx) {
+
+        String id = ctx.IDENT().getText();
+
+        if(!memoria.containsKey(id)){
+
+            System.out.println("La variable '" +id+ "' no ha sido declara o está vacía (línea "+ ctx.start.getLine() +")");
+
+        }
+
+        return Anasint.NUM;
+
     }
 
     @Override
@@ -94,8 +125,9 @@ public class Anasem_visitor extends AnasintBaseVisitor<Integer>{
         return t;
     }
 
-//TODO reforzar operaciones númericas (no permitir operaciones con secuencias vacias o secuencias lógicas, etc)
-//    no permitir operaciones con variables que no tienen un valor asignado
+//TODO reforzar operaciones númericas :
+//    - no permitir operaciones con secuencias vacias o secuencias lógicas
+//    - no permitir operaciones con variables que no tienen un valor asignado
 
 
 

@@ -111,15 +111,14 @@ seq_log: CORCHETEABIERTO expr_log (COMA expr_log)* CORCHETECERRADO
    ;
 //num
 
-expr_num:INT (COMA expr_num)?
-  |expr_num (SUMA | RESTA | MULTIPLICACION) expr_num
-  |IDENT
-  |PARENTESISABIERTO expr_num PARENTESISCERRADO
-  |IDENT CORCHETEABIERTO CORCHETECERRADO
-  |IDENT CORCHETEABIERTO expr_num (COMA expr_num)* CORCHETECERRADO
-  |llamadaF
-  |ultimaposicion
-  ;
+expr_num:INT (COMA expr_num)?                               #Int
+        |expr_num (SUMA | RESTA | MULTIPLICACION) expr_num  #Op
+        |IDENT                                              #Id
+        |IDENT CORCHETEABIERTO INT CORCHETECERRADO          #OpSeq
+        |llamadaF                                           #Fun
+        |ultimaposicion                                     #Ult
+        |PARENTESISABIERTO expr_num PARENTESISCERRADO       #Par
+        ;
 //expr_num1:INT (COMA expr_num)?
 //  |expr_num1 MULTIPLICACION expr_num
 //  |IDENT
