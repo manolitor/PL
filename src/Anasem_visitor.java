@@ -14,7 +14,7 @@ public class Anasem_visitor extends AnasintBaseVisitor<Integer>{
         String id = ctx.vars().getText();
         Integer value = visit(ctx.tipo());
         memoria2.put(id, value);
-        //System.out.println("Mapa declaraciones(VARS): " +memoria2);
+        System.out.println("Mapa declaraciones(VARS): " +memoria2);
         return visit(ctx.tipo());
     }
 
@@ -31,7 +31,7 @@ public class Anasem_visitor extends AnasintBaseVisitor<Integer>{
         String id = ctx.vars().getText();
         Integer value = visit(ctx.seq()) + visit(ctx.tipo());
         memoria2.put(id, value);
-        //System.out.println("Mapa declaraciones(SEQ): " +memoria2);
+        System.out.println("Mapa declaraciones(SEQ): " +memoria2);
         return visit(ctx.tipo());
     }
 
@@ -44,11 +44,11 @@ public class Anasem_visitor extends AnasintBaseVisitor<Integer>{
 
         if(memoria2.get(id)!=memoria.get(id)){
 
-            System.out.println("La variable '" +id+ "' no ha sido declara o está vacía (línea "+ ctx.start.getLine() +", " +ctx.start.getCharPositionInLine()+ ")");
+            System.out.println("La variable '" +id+ "' tiene un tipo incorrecto o no ha sido declarada (línea "+ ctx.start.getLine() +", " +ctx.start.getCharPositionInLine()+ ")");
 
         }
         //System.out.println(value);
-        //System.out.println("Mapa asignaciones: " +memoria);
+        System.out.println("Mapa asignaciones: " +memoria);
         return value;
     }
 
@@ -126,8 +126,7 @@ public class Anasem_visitor extends AnasintBaseVisitor<Integer>{
     }
 
 //TODO reforzar operaciones númericas :
-//    - no permitir operaciones con secuencias vacias o secuencias lógicas
-//    - no permitir operaciones con variables que no tienen un valor asignado
+//    - mirar lo de asignar una variable de dsintinto tipo a otra variable
 
 
 
