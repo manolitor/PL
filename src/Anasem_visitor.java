@@ -13,6 +13,11 @@ public class Anasem_visitor extends AnasintBaseVisitor<Integer>{
 
         String id = ctx.vars().getText();
         Integer value = visit(ctx.tipo());
+        if(memoria2.containsKey(id)){
+
+            System.out.println("La variable '" +id+ "' ya ha sido declarada (línea "+ ctx.start.getLine() +", " +ctx.start.getCharPositionInLine()+ ")");
+
+        }
         memoria2.put(id, value);
         System.out.println("Mapa declaraciones(VARS): " +memoria2);
         return visit(ctx.tipo());
@@ -32,7 +37,7 @@ public class Anasem_visitor extends AnasintBaseVisitor<Integer>{
         Integer value = visit(ctx.seq()) + visit(ctx.tipo());
         memoria2.put(id, value);
         System.out.println("Mapa declaraciones(SEQ): " +memoria2);
-        return visit(ctx.tipo());
+        return visit(ctx.tipo()) + visit(ctx.seq());
     }
 
     @Override
@@ -44,7 +49,7 @@ public class Anasem_visitor extends AnasintBaseVisitor<Integer>{
 
         if(memoria2.get(id)!=memoria.get(id)){
 
-            System.out.println("La variable '" +id+ "' tiene un tipo incorrecto o no ha sido declarada (línea "+ ctx.start.getLine() +", " +ctx.start.getCharPositionInLine()+ ")");
+            System.out.println("La variable '" +id+ "' tiene una asignacion incorrecta o no ha sido declarada (línea "+ ctx.start.getLine() +", " +ctx.start.getCharPositionInLine()+ ")");
 
         }
         //System.out.println(value);
@@ -66,7 +71,7 @@ public class Anasem_visitor extends AnasintBaseVisitor<Integer>{
 
         if(!memoria.containsKey(id)){
 
-            System.out.println("La variable '" +id+ "' no ha sido declara o está vacía (línea "+ ctx.start.getLine() +", " +ctx.start.getCharPositionInLine()+ ")");
+            System.out.println("La variable '" +id+ "' no ha sido declarada o está vacía (línea "+ ctx.start.getLine() +", " +ctx.start.getCharPositionInLine()+ ")");
 
         }
 
@@ -78,14 +83,24 @@ public class Anasem_visitor extends AnasintBaseVisitor<Integer>{
     public Integer visitOpSeq(Anasint.OpSeqContext ctx) {
 
         String id = ctx.IDENT().getText();
-
+        Integer re;
         if(!memoria.containsKey(id)){
 
             System.out.println("La variable '" +id+ "' no ha sido declara o está vacía (línea "+ ctx.start.getLine() +")");
 
         }
 
-        return Anasint.NUM;
+        if(memoria.containsKey(id)&&memoria.get(id)==58){
+
+            re = Anasint.NUM;
+
+        }else{
+
+            re = Anasint.LOG;
+
+        }
+
+        return re;
 
     }
 
@@ -125,8 +140,9 @@ public class Anasem_visitor extends AnasintBaseVisitor<Integer>{
         return t;
     }
 
-//TODO reforzar operaciones númericas :
-//    - mirar lo de asignar una variable de dsintinto tipo a otra variable
+
+
+    //TODO
 
 
 

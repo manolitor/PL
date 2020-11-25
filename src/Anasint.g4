@@ -33,10 +33,10 @@ decl_funcion: FUNCION funcion variables instrucciones dev FFUNCION;
 
 funcion:  IDENT PARENTESISABIERTO entrada? PARENTESISCERRADO DEV PARENTESISABIERTO salida PARENTESISCERRADO;
 
-entrada: SEQ PARENTESISABIERTO tipo PARENTESISCERRADO IDENT (COMA entrada)?
+entrada: seq PARENTESISABIERTO tipo PARENTESISCERRADO IDENT (COMA entrada)?
          |tipo IDENT (COMA entrada)?;
 
-salida: SEQ PARENTESISABIERTO tipo PARENTESISCERRADO IDENT (COMA salida)?
+salida: seq PARENTESISABIERTO tipo PARENTESISCERRADO IDENT (COMA salida)?
         |NUM IDENT (COMA salida)?;
 
 
@@ -64,28 +64,16 @@ control:  (mientras | si);
 
 ruptura: RUPTURA PyC;
 
-mientras: MIENTRAS PARENTESISABIERTO condicion* PARENTESISCERRADO HACER (control | asignacion | llamadas | ruptura)+ FMIENTRAS;
+mientras: MIENTRAS PARENTESISABIERTO (condicion|condicionVoF)* PARENTESISCERRADO HACER (control | asignacion | llamadas | ruptura)+ FMIENTRAS;
 
-si: SI PARENTESISABIERTO condicion* PARENTESISCERRADO ENTONCES (control | asignacion | llamadas | devL)+ (SINO (control | asignacion | llamadas | devL)+)? FSI;
+si: SI PARENTESISABIERTO (condicion|condicionVoF)* PARENTESISCERRADO ENTONCES (control | asignacion | llamadas | devL)+ (SINO (control | asignacion | llamadas | devL)+)? FSI;
 
+condicionVoF: (CIERTO | FALSO);
 
-/*condicion: NEGACION? expr
-          |(CON | DIS)? expr
-          |condicion (CON | DIS) condicion
-          |PARENTESISABIERTO condicion PARENTESISCERRADO
-          |(CIERTO | FALSO)
-          |igualdades
-          |desilgualdades;
-*/
-
-//si: SI PARENTESISABIERTO condicion* PARENTESISCERRADO ENTONCES (control | asignacion | llamadas | devL)+ (SINO (control | asignacion | llamadas | devL)+)? FSI;
-
-condicion: (NEGACION PARENTESISABIERTO ((expr (igualdades | desilgualdades) expr)|(NEGACION? expr_log (igualdades | desilgualdades) NEGACION? expr_log)|(CIERTO | FALSO))PARENTESISCERRADO)((CON | DIS)condicion)?
-           |(NEGACION? PARENTESISABIERTO condicion PARENTESISCERRADO)((CON | DIS)condicion)?
-           |((expr (igualdades | desilgualdades) expr)|(CIERTO | FALSO))((CON | DIS)condicion)?;
-
-
-
+condicion:
+           NEGACION PARENTESISABIERTO(expr_num (igualdades | desilgualdades) expr_num)|(expr_log ((igualdades | desilgualdades) expr_log)PARENTESISCERRADO((CON | DIS | igualdades | desilgualdades)condicion)?
+           |(expr_num (igualdades | desilgualdades) expr_num)|(expr_log ((igualdades | desilgualdades) expr_log)?))((CON | DIS| igualdades | desilgualdades)condicion)?
+           |(NEGACION? PARENTESISABIERTO condicion PARENTESISCERRADO)((CON | DIS| igualdades | desilgualdades)condicion)?;
 
 igualdades: IGUAL;
 
@@ -106,7 +94,6 @@ expresiones: expr (COMA expresiones)?;
 expr:expr_seq
     |expr_num
     |expr_log
-    |llamadaF
     ;
 //seq
 
@@ -139,7 +126,7 @@ expr_num:INT (COMA expr_num)?                               #Int
 //   ;
 //log
 
-expr_log: T | F | vacia | IDENT CORCHETEABIERTO expr_num CORCHETECERRADO | llamadaP ;
+expr_log: NEGACION? (T | F | vacia | IDENT CORCHETEABIERTO expr_num CORCHETECERRADO | llamadaP| IDENT );
 
 dev: DEV idents PyC;
 

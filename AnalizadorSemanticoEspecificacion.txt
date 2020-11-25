@@ -1,0 +1,58 @@
+//DISEÑO
+//Gramatica atribuida como analizador semántico de expr
+
+//Objetivo1: Calcular el tipo de una declaración y de una asignación
+//		El tipo puede ser SEQ(NUM), SEQ(LOG), NUM, LOG o indefinida.
+//		Las variables indefinidas se consideran erroneas
+//Ejemplo:
+
+//		x: NUM;
+//		r: LOG;
+//		x = r;  (asignación incorrecta)
+
+//Decisión 1: Memorizar cada variable declarada en un Map, que guarde el nombre de la variable (key) y el tipo (value)
+
+
+
+programa: {creamos memoria_declaraciones = m1, un Map para almacenar las variables declaradas y su tipo} variables subprogramas instrucciones
+
+
+decl_vars: vars {almacenar en m1 vars como key} DOSPUNTOS tipo {almacenar en m1 tipo como value} PyC;
+
+decl_seq: vars {almacenar en m1 vars como key} DOSPUNTOS seq PARENTESISABIERTO tipo {almacenar en m1 tipo+seq como value} PARENTESISCERRADO PyC;
+
+////Decisión 2: Memorizar cada variable asignada en un Map, que guarde el nombre de la variable (key) y el tipo (value)
+
+programa: {creamos memoria_asignaciones = m2, un Map para almacenar las variables asignadas y su tipo} variables subprogramas instrucciones
+
+expresiones: expr (COMA expresiones)?
+
+expr:s0 = expr_seq {devuelve tipo seq}
+    |s1 = expr_num {devuelve tipo num}
+    |s2 = expr_log {devuelve tipo log}
+
+idents: IDENT {devuelve IDENT, nombre de la variable} (COMA idents)?;
+
+
+asignacion: idents {almacenar en m2 idents.IDENT() como key} ASIG expresiones {almacenar en m2 expresiones.expr como value} PyC
+
+
+//Decisión 3: Comparar los Maps para comprobar que al realizar una asignación, el tipo asignado concuerde con el tipo declarado
+
+asignacion: idents ASIG expresiones PyC
+si misma key y (si m1.value distinto de m2.value) = error
+
+//Objetivo 2: No se puede declarar mas de una variable con el mismo nombre.
+//Ejemplo:
+
+//		d: NUM;
+//		d: LOG; (variable duplicada)
+
+//Objetivo 3: No se puede utilizar una variable que no esté declarada o que esté vacía.
+//Ejemplo:
+
+//		d: NUM;
+//		s: NUM;
+//		s = 4;
+//		s = d+1; (variable d sin asignación)
+
