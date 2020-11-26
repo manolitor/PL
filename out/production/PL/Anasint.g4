@@ -94,7 +94,6 @@ expresiones: expr (COMA expresiones)?;
 expr:expr_seq
     |expr_num
     |expr_log
-    |llamadaF
     ;
 //seq
 

@@ -1,4 +1,5 @@
 import javax.json.JsonValue;
+import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,14 +69,19 @@ public class Anasem_visitor extends AnasintBaseVisitor<Integer>{
     public Integer visitId(Anasint.IdContext ctx) {
 
         String id = ctx.IDENT().getText();
+        Integer re = 0;
 
         if(!memoria.containsKey(id)){
 
             System.out.println("La variable '" +id+ "' no ha sido declarada o está vacía (línea "+ ctx.start.getLine() +", " +ctx.start.getCharPositionInLine()+ ")");
 
+        }else{
+
+            return re = memoria2.get(id);
+
         }
 
-        return Anasint.NUM;
+        return re;
 
     }
 
